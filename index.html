@@ -666,73 +666,107 @@
 
     // Calculate Progression Points Based on Game Stats
     function calculateProgressionPoints() {
-        let points = 0;
+    // Get Stats from Form
+    const pointsScoredInput = document.getElementById("pointsScored");
+    const reboundsInput = document.getElementById("rebounds");
+    const assistsInput = document.getElementById("assists");
+    const stealsInput = document.getElementById("steals");
+    const blocksInput = document.getElementById("blocks");
+    const turnoversInput = document.getElementById("turnovers");
+    const fgAttemptsInput = document.getElementById("fgAttempts");
+    const fgMadeInput = document.getElementById("fgMade");
+    const threePtAttemptsInput = document.getElementById("threePtAttempts");
+    const threePtMadeInput = document.getElementById("threePtMade");
 
-        // Get Stats from Form
-        const pointsScored = parseInt(document.getElementById("pointsScored").value);
-        const rebounds = parseInt(document.getElementById("rebounds").value);
-        const assists = parseInt(document.getElementById("assists").value);
-        const steals = parseInt(document.getElementById("steals").value);
-        const blocks = parseInt(document.getElementById("blocks").value);
-        const turnovers = parseInt(document.getElementById("turnovers").value);
-        const fgAttempts = parseInt(document.getElementById("fgAttempts").value);
-        const fgMade = parseInt(document.getElementById("fgMade").value);
-        const threePtAttempts = parseInt(document.getElementById("threePtAttempts").value);
-        const threePtMade = parseInt(document.getElementById("threePtMade").value);
-        const winGame = document.getElementById("winGame").value;
-        const playerOfGame = document.getElementById("playerOfGame").value;
-        const higherRankedTeam = document.getElementById("higherRankedTeam").value;
-        const outperformedStarPlayer = document.getElementById("outperformedStarPlayer").value;
+    // List of inputs to check
+    const inputsToCheck = [
+        pointsScoredInput,
+        reboundsInput,
+        assistsInput,
+        stealsInput,
+        blocksInput,
+        turnoversInput,
+        fgAttemptsInput,
+        fgMadeInput,
+        threePtAttemptsInput,
+        threePtMadeInput
+    ];
 
-        // **Updated Scoring Calculations**
-        points += pointsScored * 0.1;
-        points += rebounds * 0.25;
-        points += assists * 0.2;
-
-        // Defense Points
-        points += steals * 1;
-        points += blocks * 1;
-
-        // Performance Bonuses
-        const doubleDoubleCount = [pointsScored >= 10, rebounds >= 10, assists >= 10, steals >= 10, blocks >= 10].filter(Boolean).length;
-        if (doubleDoubleCount >= 2) points += 3;
-        if (doubleDoubleCount >= 3) points += 7;
-        if (doubleDoubleCount >= 4) points += 15;
-
-        // Player of the Game
-        if (playerOfGame === "yes") points += 1;
-
-        // Shooting Efficiency
-        const fgPercentage = fgAttempts > 0 ? (fgMade / fgAttempts) * 100 : 0;
-        if (fgPercentage >= 50 && fgAttempts >= 10) points += 2;
-
-        const threePtPercentage = threePtAttempts > 0 ? (threePtMade / threePtAttempts) * 100 : 0;
-        if (threePtPercentage >= 40 && threePtAttempts >= 5) points += 2;
-
-        // Penalties
-        points -= turnovers * 0.25;
-        points -= Math.floor(turnovers / 4) * 2;
-        if (fgPercentage < 35 && fgAttempts > 12) points -= 3;
-        if (winGame === "no") points -= 0.5;
-        if (winGame === "yes") points += 1;
-
-        // Additional Bonuses
-        if (winGame === "yes" && higherRankedTeam === "yes") {
-            points += 2;
+    // Check if any input is empty
+    for (let input of inputsToCheck) {
+        if (input.value === '') {
+            alert("Please fill in all game stats before calculating points.");
+            return; // Exit the function
         }
-
-        if (outperformedStarPlayer === "yes") {
-            points += 3;
-        }
-
-        // Round to 2 decimal places
-        points = Math.round(points * 100) / 100;
-
-        // Update Player Data
-        playerData.progressionPoints += points;
-        updateProgressionPointsDisplay();
-        alert(`You earned ${points.toFixed(2)} progression points this game!`);
     }
+
+    let points = 0;
+
+    // Now proceed to parse the values
+    const pointsScored = parseInt(pointsScoredInput.value);
+    const rebounds = parseInt(reboundsInput.value);
+    const assists = parseInt(assistsInput.value);
+    const steals = parseInt(stealsInput.value);
+    const blocks = parseInt(blocksInput.value);
+    const turnovers = parseInt(turnoversInput.value);
+    const fgAttempts = parseInt(fgAttemptsInput.value);
+    const fgMade = parseInt(fgMadeInput.value);
+    const threePtAttempts = parseInt(threePtAttemptsInput.value);
+    const threePtMade = parseInt(threePtMadeInput.value);
+    const winGame = document.getElementById("winGame").value;
+    const playerOfGame = document.getElementById("playerOfGame").value;
+    const higherRankedTeam = document.getElementById("higherRankedTeam").value;
+    const outperformedStarPlayer = document.getElementById("outperformedStarPlayer").value;
+
+    // **Updated Scoring Calculations**
+    points += pointsScored * 0.1;
+    points += rebounds * 0.25;
+    points += assists * 0.2;
+
+    // Defense Points
+    points += steals * 1;
+    points += blocks * 1;
+
+    // Performance Bonuses
+    const doubleDoubleCount = [pointsScored >= 10, rebounds >= 10, assists >= 10, steals >= 10, blocks >= 10].filter(Boolean).length;
+    if (doubleDoubleCount >= 2) points += 3;
+    if (doubleDoubleCount >= 3) points += 7;
+    if (doubleDoubleCount >= 4) points += 15;
+
+    // Player of the Game
+    if (playerOfGame === "yes") points += 1;
+
+    // Shooting Efficiency
+    const fgPercentage = fgAttempts > 0 ? (fgMade / fgAttempts) * 100 : 0;
+    if (fgPercentage >= 50 && fgAttempts >= 10) points += 2;
+
+    const threePtPercentage = threePtAttempts > 0 ? (threePtMade / threePtAttempts) * 100 : 0;
+    if (threePtPercentage >= 40 && threePtAttempts >= 5) points += 2;
+
+    // Penalties
+    points -= turnovers * 0.25;
+    points -= Math.floor(turnovers / 4) * 2;
+    if (fgPercentage < 35 && fgAttempts > 12) points -= 3;
+    if (winGame === "no") points -= 0.5;
+    if (winGame === "yes") points += 1;
+
+    // Additional Bonuses
+    if (winGame === "yes" && higherRankedTeam === "yes") {
+        points += 2;
+    }
+
+    if (outperformedStarPlayer === "yes") {
+        points += 3;
+    }
+
+    // Round to 2 decimal places
+    points = Math.round(points * 100) / 100;
+
+    // Update Player Data
+    playerData.progressionPoints += points;
+    updateProgressionPointsDisplay();
+    alert(`You earned ${points.toFixed(2)} progression points this game!`);
+}
 
     // Calculate Season Achievements Points
     function calculateSeasonAchievementsPoints() {
