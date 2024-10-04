@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NBA 2K25 Player Progression System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom, #1a1a1a, #333);
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        /* Buttons */
+        button {
+            background-color: #0066cc;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #005bb5;
+            transform: translateY(-2px);
+        }
+        /* Forms */
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .form-group {
+            flex: 1 1 calc(50% - 20px);
+            min-width: 200px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"], input[type="text"], select {
+            background-color: #333;
+            color: #ffffff;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 100%;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        /* Tables */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+        th {
+            background-color: #444;
+            color: #ffffff;
+            font-size: 1.1em;
+        }
+        tr:nth-child(even) {
+            background-color: #2a2a2a;
+        }
+        tr:hover {
+            background-color: #333;
+        }
+        /* Details and Summary */
+        details {
+            background-color: #2a2a2a;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+        summary {
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: -10px -10px 10px -10px;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 4px;
+        }
+        summary h3 {
+            display: inline;
+            font-size: inherit;
+            font-weight: inherit;
+            margin: 0;
+        }
+        /* Fixed Progression Points Container */
+        #progressionPointsContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #0066cc;
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 1000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #progressionPointsContainer h2 {
+            margin: 0;
+            color: #ffffff;
+        }
+
+        /* Fixed Save Player Container */
+        #savePlayerContainer {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 8px;
+            border-radius: 50%;
+            z-index: 1000;
+        }
+
+        #savePlayerContainer button {
+            padding: 0;
+            font-size: 1.2em;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: transparent;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        #savePlayerContainer button:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: #f0f0f0;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+
+        /* Animated Rainbow Text Effect */
+        .animated-rainbow-text {
+            background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+            background-size: 400%;
+            animation: rainbow-animation 5s linear infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes rainbow-animation {
+            0% {
+                background-position: 0%;
+            }
+            100% {
+                background-position: 400%;
+            }
+        }
+
+        /* Start Screen Styles */
+        #startScreen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            /* Removed background image */
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0,0,0,0.7);
+        }
+        #startScreen h1 {
+            font-size: 4em;
+            margin-bottom: 50px;
+        }
+        #startScreen button {
+            font-size: 1.5em;
+            padding: 15px 30px;
+            margin: 10px;
+        }
+        /* Hide Main Content Initially */
+        #mainContent {
+            display: none;
+        }
+
+        /* Rainbow Background for Inputs and Selects */
+        .rainbow-background {
+            background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+            background-size: 400%;
+            animation: rainbow-animation 5s linear infinite;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Start Screen -->
+<div id="startScreen">
+    <h1>NBA 2K25 My Player</h1>
+    <button onclick="selectMode('upgrade')">Upgrade Your Player</button>
+    <button onclick="selectMode('create')">Make Your Character</button>
+</div>
+
+<!-- Hidden file input for loading player data -->
+<input type="file" id="loadFile" accept=".json" style="display:none">
+
+<!-- Main Content -->
+<div id="mainContent">
+    <!-- Fixed Save Player Data Button -->
+    <div id="savePlayerContainer">
+        <button onclick="savePlayerData()">💾</button>
+    </div>
+
+    <!-- Fixed Progression Points Display -->
+    <div id="progressionPointsContainer">
+        <h2>Progression Points: <span id="progressionPoints">0</span></h2>
+    </div>
+
+    <div class="main-container">
+        <h1 id="modeTitle">NBA 2K25 Player Progression System</h1>
+
+        <!-- Season Achievements Section -->
+        <div class="section" id="seasonAchievementsSection">
+            <h2>Season Achievements</h2>
+            <form id="seasonAchievementsForm">
+                <!-- Breaking Records -->
+                <details>
+                    <summary><h3>Breaking Records</h3></summary>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label><input type="checkbox" id="nbaSingleGameRecordPoints"> Broke NBA Single-Game Record for Points</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="nbaSingleGameRecordOthers"> Broke NBA Single-Game Record for Rebounds/Assists/Steals/Blocks</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="teamSingleGameRecordPoints"> Broke Team Single-Game Record for Points</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="teamSingleGameRecordOthers"> Broke Team Single-Game Record for Rebounds/Assists/Steals/Blocks</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="nbaSeasonRecord"> Broke NBA Season Record</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="teamSeasonRecord"> Broke Team Season Record</label>
+                        </div>
+                    </div>
+                </details>
+                <!-- Playoff Seeding -->
+                <details>
+                    <summary><h3>Playoff Seeding</h3></summary>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label><input type="checkbox" id="securedPlayoffSpot"> Secured a Playoff Spot</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="top4Seed"> Finished as Top 4 Seed in Conference</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="number1Seed"> Finished as #1 Seed in Conference</label>
+                        </div>
+                    </div>
+                </details>
+                <!-- League Leader -->
+                <details>
+                    <summary><h3>League Leader</h3></summary>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label><input type="checkbox" id="scoringLeader"> Scoring Leader</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="reboundingLeader"> Rebounding Leader</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="assistsLeader"> Assists Leader</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="stealsLeader"> Steals Leader</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="blocksLeader"> Blocks Leader</label>
+                        </div>
+                    </div>
+                </details>
+                <!-- Awards -->
+                <details>
+                    <summary><h3>Awards</h3></summary>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label><input type="checkbox" id="playerOfWeek"> Player of the Week</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="playerOfMonth"> Player of the Month</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="roty"> Rookie of the Year</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="dpoy"> Defensive Player of the Year</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="mvp"> Most Valuable Player (MVP)</label>
+                        </div>
+                    </div>
+                </details>
+                <!-- All-Star Game Selections -->
+                <details>
+                    <summary><h3>All-Star Game Selections</h3></summary>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label><input type="checkbox" id="allStarReserve"> All-Star Reserve</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="allStarStarter"> All-Star Starter</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="allStarMVP"> All-Star Game MVP</label>
+                        </div>
+                    </div>
+                </details>
+                <!-- Special Events Participation -->
+                <details>
+                    <summary><h3>Special Events Participation</h3></summary>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label><input type="checkbox" id="qualify3ptContest"> Qualified for 3-Point Contest</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="qualifyDunkContest"> Qualified for Dunk Contest</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="win3ptContest"> Won 3-Point Contest</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="winDunkContest"> Won Dunk Contest</label>
+                        </div>
+                    </div>
+                </details>
+                <!-- All-Rookie Team Selections -->
+                <details>
+                    <summary><h3>All-Rookie Team Selections</h3></summary>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label><input type="checkbox" id="allRookieSecondTeam"> NBA All-Rookie Second Team</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="allRookieFirstTeam"> NBA All-Rookie First Team</label>
+                        </div>
+                    </div>
+                </details>
+                <!-- All-NBA Team Selections -->
+                <details>
+                    <summary><h3>All-NBA Team Selections</h3></summary>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label><input type="checkbox" id="allNBAThirdTeam"> All-NBA Third Team</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="allNBASecondTeam"> All-NBA Second Team</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="allNBAFirstTeam"> All-NBA First Team</label>
+                        </div>
+                    </div>
+                </details>
+                <!-- All-Defensive Team Selections -->
+                <details>
+                    <summary><h3>All-Defensive Team Selections</h3></summary>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label><input type="checkbox" id="allDefSecondTeam"> All-Defensive Second Team</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="allDefFirstTeam"> All-Defensive First Team</label>
+                        </div>
+                    </div>
+                </details>
+                <!-- In-Season Tournament Achievements -->
+                <details>
+                    <summary><h3>In-Season Tournament Achievements</h3></summary>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label><input type="checkbox" id="qualifyInSeasonPlayoffs"> Qualified for In-Season Tournament Playoffs</label>
+                        </div>
+                        <div class="form-group">
+                            <label>Number of Wins in In-Season Tournament Playoffs:</label>
+                            <input type="number" id="inSeasonPlayoffWins" min="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="inSeasonChampion"> In-Season Tournament Champion</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="inSeasonMVP"> In-Season Tournament MVP</label>
+                        </div>
+                    </div>
+                </details>
+                <!-- Playoff Achievements -->
+                <details>
+                    <summary><h3>Playoff Achievements</h3></summary>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label><input type="checkbox" id="winFirstRound"> Won First-Round Series</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="winSecondRound"> Won Second-Round Series</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="winConferenceFinals"> Won Conference Finals</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="winChampionship"> Won NBA Championship</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="finalsMVP"> Finals MVP</label>
+                        </div>
+                    </div>
+                </details>
+                <button type="button" onclick="calculateSeasonAchievementsPoints()">Add Season Achievement Points</button>
+            </form>
+        </div>
+
+        <div class="section" id="gameStatsSection">
+            <h2>Enter Game Stats</h2>
+            <form id="gameStatsForm" class="form-container">
+                <!-- Points Scored -->
+                <div class="form-group">
+                    <label for="pointsScored">Points Scored:</label>
+                    <input type="number" id="pointsScored" min="0" value="0">
+                </div>
+                <!-- Rebounds -->
+                <div class="form-group">
+                    <label for="rebounds">Rebounds:</label>
+                    <input type="number" id="rebounds" min="0" value="0">
+                </div>
+                <!-- Assists -->
+                <div class="form-group">
+                    <label for="assists">Assists:</label>
+                    <input type="number" id="assists" min="0" value="0">
+                </div>
+                <!-- Steals -->
+                <div class="form-group">
+                    <label for="steals">Steals:</label>
+                    <input type="number" id="steals" min="0" value="0">
+                </div>
+                <!-- Blocks -->
+                <div class="form-group">
+                    <label for="blocks">Blocks:</label>
+                    <input type="number" id="blocks" min="0" value="0">
+                </div>
+                <!-- Turnovers -->
+                <div class="form-group">
+                    <label for="turnovers">Turnovers:</label>
+                    <input type="number" id="turnovers" min="0" value="0">
+                </div>
+                <!-- Field Goals Made -->
+                <div class="form-group">
+                    <label for="fgMade">Field Goals Made:</label>
+                    <input type="number" id="fgMade" min="0" value="0">
+                </div>
+                <!-- Field Goal Attempts -->
+                <div class="form-group">
+                    <label for="fgAttempts">Field Goal Attempts:</label>
+                    <input type="number" id="fgAttempts" min="0" value="0">
+                </div>
+                <!-- 3-Pointers Made -->
+                <div class="form-group">
+                    <label for="threePtMade">3-Pointers Made:</label>
+                    <input type="number" id="threePtMade" min="0" value="0">
+                </div>
+                <!-- 3-Point Attempts -->
+                <div class="form-group">
+                    <label for="threePtAttempts">3-Point Attempts:</label>
+                    <input type="number" id="threePtAttempts" min="0" value="0">
+                </div>
+                <!-- Did you win the game? -->
+                <div class="form-group">
+                    <label for="winGame">Did you win the game?</label>
+                    <select id="winGame">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+                <!-- Player of the Game? -->
+                <div class="form-group">
+                    <label for="playerOfGame">Player of the Game?</label>
+                    <select id="playerOfGame">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+                </div>
+                <!-- Played Against Higher-Ranked Team? -->
+                <div class="form-group">
+                    <label for="higherRankedTeam">Played Against Higher-Ranked Team?</label>
+                    <select id="higherRankedTeam">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+                </div>
+                <!-- Outperformed a Star Player? -->
+                <div class="form-group">
+                    <label for="outperformedStarPlayer">Outperformed a Star Player (Rated 90+)?</label>
+                    <select id="outperformedStarPlayer">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+                </div>
+            </form>
+            <button type="button" onclick="calculateProgressionPoints()">Calculate Points</button>
+        </div>
+
+        <div class="section">
+            <h2>Attribute Upgrades</h2>
+            <table id="attributesTable">
+                <!-- Attribute rows will be inserted here -->
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Badge Upgrades</h2>
+            <table id="badgesTable">
+                <!-- Badge rows will be inserted here -->
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>Lovingly Coded by SplaTunes</p>
+    </footer>
+</div>
+
+<script>
+    // Global Variables
+    let playerData = {
+        progressionPoints: 0,
+        attributes: {},
+        badges: {}
+    };
+    let mode = ''; // 'upgrade' or 'create'
+    let loadedFileName = 'playerData.json'; // Default file name
+
+    // Initialize Attributes
+    const attributesList = {
+        "Offense": [
+            "Driving Layup", "Post Fade", "Post Hook", "Post Control", "Draw Foul",
+            "Close Shot", "Mid-Range Shot", "Three-Point Shot", "Free Throw",
+            "Ball Handle", "Pass IQ", "Pass Accuracy", "Offensive Rebound",
+            "Standing Dunk", "Driving Dunk", "Shot IQ", "Pass Vision", "Hands"
+        ],
+        "Defense": [
+            "Defensive Rebound", "Interior Defense", "Perimeter Defense",
+            "Block", "Steal"
+        ],
+        "Athleticism": [
+            "Speed", "Speed With Ball", "Vertical", "Strength", "Stamina",
+            "Hustle", "Agility"
+        ],
+        "Mental": [
+            "Pass Perception", "Defensive Consistency", "Help Defense IQ",
+            "Offensive Consistency"
+        ]
+    };
+
+    // Initialize Badges
+    const badgesList = {
+        "Inside Scoring": [
+            "Float Game", "Posterizer", "Rise Up", "Aerial Wizard", "Hook Specialist",
+            "Layup Mixmaster", "Paint Prodigy", "Physical Finisher", "Post Powerhouse",
+            "Post-Up Poet"
+        ],
+        "Outside Scoring": [
+            "Post Fade Phenom", "Deadeye", "Limitless Range", "Slippery Off-Ball",
+            "Mini Marksman", "Set Shot Specialist", "Shifty Shooter"
+        ],
+        "Playmaking": [
+            "Bail Out", "Break Starter", "Dimer", "Handles for Days", "Unpluckable",
+            "Versatile Visionary", "Ankle Assassin", "Lightning Launch", "Strong Handle"
+        ],
+        "Defending": [
+            "Post Lockdown", "Challenger", "Off-Ball Pest", "Pick Dodger",
+            "Glove", "Interceptor", "Pogo Stick", "On-Ball Menace", "High-Flying Denier",
+            "Paint Patroller"
+        ],
+        "Athleticism": ["Brick Wall", "Immovable Enforcer"],
+        "Rebounding": ["Boxout Beast", "Rebound Chaser"]
+    };
+
+    // Initialize Player Data
+    function initializePlayerData() {
+        for (let category in attributesList) {
+            attributesList[category].forEach(attr => {
+                if (!(attr in playerData.attributes)) {
+                    playerData.attributes[attr] = 25; // Default starting value
+                }
+            });
+        }
+
+        for (let category in badgesList) {
+            badgesList[category].forEach(badge => {
+                if (!(badge in playerData.badges)) {
+                    playerData.badges[badge] = "None"; // Default starting level
+                }
+            });
+        }
+    }
+
+    // Update Progression Points Display
+    function updateProgressionPointsDisplay() {
+        document.getElementById("progressionPoints").innerText = playerData.progressionPoints.toFixed(2);
+    }
+
+    // Select Mode
+    function selectMode(selectedMode) {
+        mode = selectedMode;
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+
+        if (mode === 'upgrade') {
+            document.getElementById('modeTitle').innerText = 'Upgrade Your Player';
+            document.getElementById('progressionPointsContainer').style.display = 'block';
+            document.getElementById('seasonAchievementsSection').style.display = 'block';
+            document.getElementById('gameStatsSection').style.display = 'block';
+
+            // Prompt the user to load their save file
+            document.getElementById('loadFile').click();
+
+        } else if (mode === 'create') {
+            document.getElementById('modeTitle').innerText = 'Create Your Player';
+            document.getElementById('progressionPointsContainer').style.display = 'none';
+            document.getElementById('seasonAchievementsSection').style.display = 'none';
+            document.getElementById('gameStatsSection').style.display = 'none';
+
+            // Set progressionPoints to 0 for compatibility
+            playerData.progressionPoints = 0;
+        }
+
+        initializePlayerData();
+        renderAttributesTable();
+        renderBadgesTable();
+    }
+
+    // Calculate Progression Points Based on Game Stats
+    function calculateProgressionPoints() {
+        let points = 0;
+
+        // Get Stats from Form
+        const pointsScored = parseInt(document.getElementById("pointsScored").value);
+        const rebounds = parseInt(document.getElementById("rebounds").value);
+        const assists = parseInt(document.getElementById("assists").value);
+        const steals = parseInt(document.getElementById("steals").value);
+        const blocks = parseInt(document.getElementById("blocks").value);
+        const turnovers = parseInt(document.getElementById("turnovers").value);
+        const fgAttempts = parseInt(document.getElementById("fgAttempts").value);
+        const fgMade = parseInt(document.getElementById("fgMade").value);
+        const threePtAttempts = parseInt(document.getElementById("threePtAttempts").value);
+        const threePtMade = parseInt(document.getElementById("threePtMade").value);
+        const winGame = document.getElementById("winGame").value;
+        const playerOfGame = document.getElementById("playerOfGame").value;
+        const higherRankedTeam = document.getElementById("higherRankedTeam").value;
+        const outperformedStarPlayer = document.getElementById("outperformedStarPlayer").value;
+
+        // **Updated Scoring Calculations**
+        points += pointsScored * 0.1;
+        points += rebounds * 0.25;
+        points += assists * 0.2;
+
+        // Defense Points
+        points += steals * 1;
+        points += blocks * 1;
+
+        // Performance Bonuses
+        const doubleDoubleCount = [pointsScored >= 10, rebounds >= 10, assists >= 10, steals >= 10, blocks >= 10].filter(Boolean).length;
+        if (doubleDoubleCount >= 2) points += 3;
+        if (doubleDoubleCount >= 3) points += 7;
+        if (doubleDoubleCount >= 4) points += 15;
+
+        // Player of the Game
+        if (playerOfGame === "yes") points += 1;
+
+        // Shooting Efficiency
+        const fgPercentage = fgAttempts > 0 ? (fgMade / fgAttempts) * 100 : 0;
+        if (fgPercentage >= 50 && fgAttempts >= 10) points += 2;
+
+        const threePtPercentage = threePtAttempts > 0 ? (threePtMade / threePtAttempts) * 100 : 0;
+        if (threePtPercentage >= 40 && threePtAttempts >= 5) points += 2;
+
+        // Penalties
+        points -= turnovers * 0.25;
+        points -= Math.floor(turnovers / 4) * 2;
+        if (fgPercentage < 35 && fgAttempts > 12) points -= 3;
+        if (winGame === "no") points -= 0.5;
+        if (winGame === "yes") points += 1;
+
+        // Additional Bonuses
+        if (winGame === "yes" && higherRankedTeam === "yes") {
+            points += 2;
+        }
+
+        if (outperformedStarPlayer === "yes") {
+            points += 3;
+        }
+
+        // Round to 2 decimal places
+        points = Math.round(points * 100) / 100;
+
+        // Update Player Data
+        playerData.progressionPoints += points;
+        updateProgressionPointsDisplay();
+        alert(`You earned ${points.toFixed(2)} progression points this game!`);
+    }
+
+    // Calculate Season Achievements Points
+    function calculateSeasonAchievementsPoints() {
+        let points = 0;
+
+        // Breaking Records
+        if (document.getElementById('nbaSingleGameRecordPoints').checked) points += 60;
+        if (document.getElementById('nbaSingleGameRecordOthers').checked) points += 47;
+        if (document.getElementById('teamSingleGameRecordPoints').checked) points += 34;
+        if (document.getElementById('teamSingleGameRecordOthers').checked) points += 24;
+        if (document.getElementById('nbaSeasonRecord').checked) points += 70;
+        if (document.getElementById('teamSeasonRecord').checked) points += 26;
+
+        // Playoff Seeding
+        if (document.getElementById('securedPlayoffSpot').checked) points += 3;
+        if (document.getElementById('top4Seed').checked) points += 4;
+        if (document.getElementById('number1Seed').checked) points += 5;
+
+        // **League Leaders**
+        if (document.getElementById('scoringLeader').checked) points += 31;
+        if (document.getElementById('reboundingLeader').checked) points += 31;
+        if (document.getElementById('assistsLeader').checked) points += 31;
+        if (document.getElementById('stealsLeader').checked) points += 31;
+        if (document.getElementById('blocksLeader').checked) points += 31;
+
+        // Awards
+        if (document.getElementById('playerOfWeek').checked) points += 5;
+        if (document.getElementById('playerOfMonth').checked) points += 10;
+        if (document.getElementById('roty').checked) points += 34;
+        if (document.getElementById('dpoy').checked) points += 34;
+        if (document.getElementById('mvp').checked) points += 52;
+
+        // All-Star Game Selections
+        if (document.getElementById('allStarReserve').checked) points += 18;
+        if (document.getElementById('allStarStarter').checked) points += 31;
+        if (document.getElementById('allStarMVP').checked) points += 44;
+
+        // Special Events Participation
+        if (document.getElementById('qualify3ptContest').checked) points += 5;
+        if (document.getElementById('qualifyDunkContest').checked) points += 5;
+        if (document.getElementById('win3ptContest').checked) points += 18;
+        if (document.getElementById('winDunkContest').checked) points += 18;
+
+        // All-Rookie Team Selections
+        if (document.getElementById('allRookieSecondTeam').checked) points += 1;
+        if (document.getElementById('allRookieFirstTeam').checked) points += 10;
+
+        // All-NBA Team Selections
+        if (document.getElementById('allNBAThirdTeam').checked) points += 26;
+        if (document.getElementById('allNBASecondTeam').checked) points += 39;
+        if (document.getElementById('allNBAFirstTeam').checked) points += 52;
+
+        // All-Defensive Team Selections
+        if (document.getElementById('allDefSecondTeam').checked) points += 26;
+        if (document.getElementById('allDefFirstTeam').checked) points += 39;
+
+        // In-Season Tournament Achievements
+        if (document.getElementById('qualifyInSeasonPlayoffs').checked) points += 3;
+        const inSeasonPlayoffWins = parseInt(document.getElementById('inSeasonPlayoffWins').value);
+        points += inSeasonPlayoffWins * 2;
+        if (document.getElementById('inSeasonChampion').checked) points += 26;
+        if (document.getElementById('inSeasonMVP').checked) points += 13;
+
+        // Playoff Achievements
+        if (document.getElementById('winFirstRound').checked) points += 5;
+        if (document.getElementById('winSecondRound').checked) points += 10;
+        if (document.getElementById('winConferenceFinals').checked) points += 15;
+        if (document.getElementById('winChampionship').checked) points += 60;
+        if (document.getElementById('finalsMVP').checked) points += 13;
+
+        // Update Player Data
+        playerData.progressionPoints += points;
+        updateProgressionPointsDisplay();
+
+        alert(`You earned ${points} progression points from Season Achievements!`);
+
+        // Reset the form (optional)
+        document.getElementById('seasonAchievementsForm').reset();
+    }
+
+    // Calculate Attribute Upgrade Cost
+    function calculateAttributeUpgradeCost(currentValue) {
+        if (currentValue < 60) return 1;
+        else if (currentValue >= 60 && currentValue <= 70) return 2;
+        else if (currentValue >= 71 && currentValue <= 80) return 3;
+        else if (currentValue >= 81 && currentValue <= 90) return 4;
+        else if (currentValue >= 91 && currentValue <= 95) return 5;
+        else if (currentValue >= 96 && currentValue <= 99) return 7;
+        else return 0;
+    }
+
+    // Upgrade Attribute
+    function upgradeAttribute(attribute) {
+        const currentValue = playerData.attributes[attribute];
+        const cost = calculateAttributeUpgradeCost(currentValue);
+
+        if (mode === 'create') {
+            if (currentValue < 99) {
+                playerData.attributes[attribute] += 1;
+                renderAttributesTable();
+            } else {
+                alert("Attribute is at max value.");
+            }
+        } else {
+            if (playerData.progressionPoints >= cost && currentValue < 99) {
+                playerData.progressionPoints -= cost;
+                playerData.attributes[attribute] += 1;
+                updateProgressionPointsDisplay();
+                renderAttributesTable();
+            } else {
+                alert("Not enough progression points or attribute is at max value.");
+            }
+        }
+    }
+
+    // Downgrade Attribute
+    function downgradeAttribute(attribute) {
+        const currentValue = playerData.attributes[attribute];
+        if (currentValue > 25) {
+            if (mode === 'create') {
+                playerData.attributes[attribute] -= 1;
+                renderAttributesTable();
+            } else {
+                const refund = calculateAttributeUpgradeCost(currentValue - 1);
+                playerData.progressionPoints += refund;
+                playerData.attributes[attribute] -= 1;
+                updateProgressionPointsDisplay();
+                renderAttributesTable();
+            }
+        } else {
+            alert("Attribute is already at minimum value.");
+        }
+    }
+
+    // Render Attributes Table
+    function renderAttributesTable() {
+        const table = document.getElementById("attributesTable");
+        // Clear existing rows
+        table.innerHTML = `
+            <tr>
+                <th>Attribute</th>
+                <th>Current Value</th>
+                ${mode === 'create' ? '' : '<th>Upgrade Cost</th><th>Action</th>'}
+            </tr>
+        `;
+        for (let category in attributesList) {
+            // Add category header
+            const headerRow = table.insertRow();
+            const headerCell = headerRow.insertCell(0);
+            headerCell.colSpan = mode === 'create' ? 2 : 4;
+            headerCell.innerHTML = `<strong>${category}</strong>`;
+            headerCell.style.backgroundColor = "#444";
+
+            attributesList[category].forEach(attr => {
+                const currentValue = playerData.attributes[attr];
+                let cost = calculateAttributeUpgradeCost(currentValue);
+
+                const row = table.insertRow();
+                row.insertCell(0).innerText = attr;
+
+                const valueCell = row.insertCell(1);
+
+                if (mode === 'create') {
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.min = 25;
+                    input.max = 99;
+                    input.value = currentValue;
+
+                    // Apply rainbow background if value is 99
+                    if (currentValue === 99) {
+                        input.classList.add('rainbow-background');
+                    } else {
+                        input.classList.remove('rainbow-background');
+                    }
+
+                    input.onchange = () => {
+                        let newValue = parseInt(input.value);
+                        if (newValue < 25) newValue = 25;
+                        if (newValue > 99) newValue = 99;
+                        playerData.attributes[attr] = newValue;
+                        renderAttributesTable();
+                    };
+                    valueCell.appendChild(input);
+                } else {
+                    valueCell.innerText = currentValue;
+
+                    // Reset color and class
+                    valueCell.style.color = "";
+                    valueCell.classList.remove("animated-rainbow-text");
+
+                    // Set color based on value ranges
+                    if (currentValue === 99) {
+                        valueCell.classList.add("animated-rainbow-text");
+                    } else if (currentValue >= 86 && currentValue <= 98) {
+                        valueCell.style.color = "purple";
+                    } else if (currentValue >= 76 && currentValue <= 85) {
+                        valueCell.style.color = "gold";
+                    } else if (currentValue >= 66 && currentValue <= 75) {
+                        valueCell.style.color = "silver";
+                    } else {
+                        valueCell.style.color = "brown";
+                    }
+                }
+
+                if (mode !== 'create') {
+                    row.insertCell(2).innerText = cost;
+                    const actionCell = row.insertCell(3);
+
+                    // Upgrade Button
+                    const upgradeButton = document.createElement("button");
+                    upgradeButton.innerText = "Upgrade";
+                    upgradeButton.onclick = () => upgradeAttribute(attr);
+                    actionCell.appendChild(upgradeButton);
+
+                    // Downgrade Button
+                    const downgradeButton = document.createElement("button");
+                    downgradeButton.innerText = "Downgrade";
+                    downgradeButton.onclick = () => downgradeAttribute(attr);
+                    actionCell.appendChild(downgradeButton);
+                }
+            });
+        }
+    }
+
+    // Render Badges Table
+    function renderBadgesTable() {
+        const table = document.getElementById("badgesTable");
+        // Clear existing rows
+        table.innerHTML = `
+            <tr>
+                <th>Badge</th>
+                <th>Current Level</th>
+                ${mode === 'create' ? '' : '<th>Upgrade Cost</th><th>Action</th>'}
+            </tr>
+        `;
+        for (let category in badgesList) {
+            const headerRow = table.insertRow();
+            const headerCell = headerRow.insertCell(0);
+            headerCell.colSpan = mode === 'create' ? 2 : 4;
+            headerCell.innerHTML = `<strong>${category}</strong>`;
+            headerCell.style.backgroundColor = "#444";
+
+            badgesList[category].forEach(badge => {
+                const currentLevel = playerData.badges[badge];
+                const levels = ["None", "Bronze", "Silver", "Gold", "Hall of Fame", "Legend"];
+                const costs = [0, 3, 5, 7, 10, 15];
+                const currentIndex = levels.indexOf(currentLevel);
+                const nextIndex = currentIndex + 1;
+                const upgradeCost = nextIndex < levels.length ? costs[nextIndex] : "-";
+
+                const row = table.insertRow();
+                row.insertCell(0).innerText = badge;
+
+                const levelCell = row.insertCell(1);
+
+                if (mode === 'create') {
+                    const select = document.createElement('select');
+                    levels.forEach(level => {
+                        const option = document.createElement('option');
+                        option.value = level;
+                        option.text = level;
+                        if (level === currentLevel) {
+                            option.selected = true;
+                        }
+                        select.appendChild(option);
+                    });
+
+                    // Apply rainbow background if level is 'Legend'
+                    if (currentLevel === 'Legend') {
+                        select.classList.add('rainbow-background');
+                    } else {
+                        select.classList.remove('rainbow-background');
+                    }
+
+                    select.onchange = () => {
+                        playerData.badges[badge] = select.value;
+                        renderBadgesTable();
+                    };
+                    levelCell.appendChild(select);
+                } else {
+                    levelCell.innerText = currentLevel;
+
+                    // Reset color and class
+                    levelCell.style.color = "";
+                    levelCell.classList.remove("animated-rainbow-text");
+
+                    // Set the color based on currentLevel
+                    switch (currentLevel) {
+                        case "Bronze":
+                            levelCell.style.color = "brown";
+                            break;
+                        case "Silver":
+                            levelCell.style.color = "silver";
+                            break;
+                        case "Gold":
+                            levelCell.style.color = "gold";
+                            break;
+                        case "Hall of Fame":
+                            levelCell.style.color = "purple";
+                            break;
+                        case "Legend":
+                            levelCell.classList.add("animated-rainbow-text");
+                            break;
+                        default:
+                            levelCell.style.color = "#f0f0f0";
+                    }
+                }
+
+                if (mode !== 'create') {
+                    row.insertCell(2).innerText = upgradeCost;
+                    const actionCell = row.insertCell(3);
+
+                    // Upgrade Button
+                    const upgradeButton = document.createElement("button");
+                    upgradeButton.innerText = "Upgrade";
+                    upgradeButton.onclick = () => upgradeBadge(badge);
+                    actionCell.appendChild(upgradeButton);
+
+                    // Downgrade Button
+                    const downgradeButton = document.createElement("button");
+                    downgradeButton.innerText = "Downgrade";
+                    downgradeButton.onclick = () => downgradeBadge(badge);
+                    actionCell.appendChild(downgradeButton);
+                }
+            });
+        }
+    }
+
+    // Upgrade Badge
+    function upgradeBadge(badge) {
+        const levels = ["None", "Bronze", "Silver", "Gold", "Hall of Fame", "Legend"];
+        const costs = [0, 3, 5, 7, 10, 15];
+        const currentLevel = playerData.badges[badge];
+        const currentIndex = levels.indexOf(currentLevel);
+
+        if (currentIndex < levels.length - 1) {
+            const nextIndex = currentIndex + 1;
+            const totalCost = costs[nextIndex];
+
+            if (mode === 'create') {
+                playerData.badges[badge] = levels[nextIndex];
+                renderBadgesTable();
+            } else {
+                if (playerData.progressionPoints >= totalCost) {
+                    playerData.progressionPoints -= totalCost;
+                    playerData.badges[badge] = levels[nextIndex];
+                    updateProgressionPointsDisplay();
+                    renderBadgesTable();
+                } else {
+                    alert("Not enough progression points to upgrade badge.");
+                }
+            }
+        } else {
+            alert("Badge is already at maximum level.");
+        }
+    }
+
+    // Downgrade Badge
+    function downgradeBadge(badge) {
+        const levels = ["None", "Bronze", "Silver", "Gold", "Hall of Fame", "Legend"];
+        const costs = [0, 3, 5, 7, 10, 15];
+        const currentLevel = playerData.badges[badge];
+        const currentIndex = levels.indexOf(currentLevel);
+
+        if (currentIndex > 0) {
+            if (mode === 'create') {
+                playerData.badges[badge] = levels[currentIndex - 1];
+                renderBadgesTable();
+            } else {
+                const refund = costs[currentIndex];
+                playerData.progressionPoints += refund;
+                playerData.badges[badge] = levels[currentIndex - 1];
+                updateProgressionPointsDisplay();
+                renderBadgesTable();
+            }
+        } else {
+            alert("Badge is already at minimum level.");
+        }
+    }
+
+    // Save Player Data to File
+    function savePlayerData() {
+        const dataStr = JSON.stringify(playerData);
+        const dataBlob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(dataBlob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = loadedFileName || 'playerData.json';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Load Player Data from File
+    document.getElementById("loadFile").addEventListener("change", function() {
+        const file = this.files[0];
+        if (!file) return;
+        loadedFileName = file.name;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                playerData = JSON.parse(e.target.result);
+                // Ensure progressionPoints is a number
+                if (typeof playerData.progressionPoints !== 'number' || !isFinite(playerData.progressionPoints)) {
+                    playerData.progressionPoints = 0;
+                }
+                initializePlayerData();
+                updateProgressionPointsDisplay();
+                renderAttributesTable();
+                renderBadgesTable();
+            } catch (err) {
+                alert("Invalid file format.");
+            }
+        };
+        reader.readAsText(file);
+    });
+
+</script>
+
+</body>
+</html>
